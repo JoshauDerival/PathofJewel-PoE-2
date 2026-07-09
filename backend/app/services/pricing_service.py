@@ -1,5 +1,6 @@
 from app.models.jewel import JewelRequest
 from app.services.trade_service import trade_service
+from app.services.stat_mapper_service import stat_mapper_service
 
 
 class PricingService:
@@ -7,39 +8,41 @@ class PricingService:
     def estimate_price(self, jewel: JewelRequest):
         search = trade_service.build_search(jewel)
 
-        score = 0
+        total_score = 0
+        matched_stats = []
+        unmatched_stats = []
 
         for attribute in jewel.attributes:
-            name = attribute.name.lower()
-            value = attribute.value
+            mapped_stat = stat_mapper_service.map_stat(attribute.name)
 
-            if "maximum life" in name:
-                score += value * 3
+            stat_score = attribute.value * mapped_stat["weight"]
+            total_score += stat_score
 
-            if "fire damage" in name:
-                score += value * 1.5
+            stat_info = {
+                "name": attribute.name,
+                "value": attribute.value,
+                "matched": mapped_stat["matched"],
+                "trade_stat_id": mapped_stat["trade_stat_id"],
+                "weight": mapped_stat["weight"],
+                "score": round(stat_score, 2)
+            }
 
-            if "cold damage" in name:
-                score += value * 1.5
+            if mapped_stat["matched"]:
+                matched_stats.append(stat_info)
+            else:
+                unmatched_stats.append(stat_info)
 
-            if "lightning damage" in name:
-                score += value * 1.5
-
-            if "critical" in name:
-                score += value * 2
-
-            if "resistance" in name:
-                score += value * 1
-
-        estimated_exalts = max(round(score / 10, 1), 1)
-
-        confidence = min(round(score / 100, 2), 0.75)
+        estimated_exalts = max(round(total_score / 50, 1), 1)
+        confidence = min(round(len(matched_stats) / max(len(jewel.attributes), 1), 2), 0.85)
 
         return {
             "estimated_price": f"{estimated_exalts} exalted",
             "confidence": confidence,
+            "total_score": round(total_score, 2),
+            "matched_stats": matched_stats,
+            "unmatched_stats": unmatched_stats,
             "trade_query": search,
-            "note": "This is a mock estimate. Real trade data will be added later."
+            "note": "Weighted mock estimate. Real trade listings will be added later."
         }
 
 
