@@ -15,6 +15,17 @@ class SimilarityService:
         similarity = len(matching_ids) / len(target_ids)
 
         return round(similarity, 2)
+    
+    def compare_listing(self, target_ids, listing):
+
+        listing_ids = set(listing["attributes"])
+
+        if not target_ids:
+            return 0
+
+        matches = target_ids.intersection(listing_ids)
+
+        return len(matches) / len(target_ids)
 
 
 similarity_service = SimilarityService()

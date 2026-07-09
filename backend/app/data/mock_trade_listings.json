@@ -1,0 +1,46 @@
+[
+  {
+    "price": 8,
+    "currency": "exalted",
+    "attributes": [
+      "explicit.maximum_life",
+      "explicit.fire_damage",
+      "explicit.critical"
+    ]
+  },
+  {
+    "price": 6,
+    "currency": "exalted",
+    "attributes": [
+      "explicit.maximum_life",
+      "explicit.fire_damage"
+    ]
+  },
+  {
+    "price": 12,
+    "currency": "exalted",
+    "attributes": [
+      "explicit.maximum_life",
+      "explicit.fire_damage",
+      "explicit.attack_speed"
+    ]
+  },
+  {
+    "price": 3,
+    "currency": "exalted",
+    "attributes": [
+      "explicit.resistance",
+      "explicit.fire_damage"
+    ]
+  },
+  {
+    "price": 15,
+    "currency": "exalted",
+    "attributes": [
+      "explicit.maximum_life",
+      "explicit.fire_damage",
+      "explicit.critical",
+      "explicit.attack_speed"
+    ]
+  }
+]

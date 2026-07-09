@@ -2,6 +2,8 @@ from app.models.jewel import JewelRequest
 from app.services.trade_service import trade_service
 from app.services.stat_mapper_service import stat_mapper_service
 from app.services.similarity_service import similarity_service
+from app.services.trade_provider_service import trade_provider_service
+from app.services.price_estimator_service import price_estimator_service
 
 class PricingService:
 
@@ -32,18 +34,47 @@ class PricingService:
             else:
                 unmatched_stats.append(stat_info)
 
-        estimated_exalts = max(round(total_score / 50, 1), 1)
-        confidence = min(round(len(matched_stats) / max(len(jewel.attributes), 1), 2), 0.85)
+        target_ids = {
+            attribute.id
+            for attribute in jewel.attributes
+            if attribute.id
+        }
+
+        results = []
+
+        for listing in trade_provider_service.search(search):
+
+            similarity = similarity_service.compare_listing(
+                target_ids,
+                listing
+            )
+
+            results.append(
+                {
+                "price": listing["price"],
+                "currency": listing["currency"],
+                "similarity": round(similarity, 2)
+                }
+            )
+
+        results.sort(
+            key=lambda x: (-x["similarity"], x["price"])
+        )
+
+        estimate = price_estimator_service.estimate(results[:5])
 
         return {
-            "estimated_price": f"{estimated_exalts} exalted",
-            "confidence": confidence,
-            "total_score": round(total_score, 2),
-            "matched_stats": matched_stats,
-            "unmatched_stats": unmatched_stats,
-            "trade_query": search,
-            "similarity_ready": True,
-            "note": "Weighted mock estimate. Real trade listings will be added later."
+            "estimate": estimate,
+            "matches": results[:5],
+            "analysis": {
+                "matched_stats": matched_stats,
+                "unmatched_stats": unmatched_stats
+            },
+            "debug": {
+                "trade_query": search,
+                "similarity_ready": True
+            },
+            "note": "Estimate is based on mock comparable listings. Real trade listings will be added later."
         }
 
 
