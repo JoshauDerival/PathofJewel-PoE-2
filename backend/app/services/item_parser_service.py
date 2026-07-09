@@ -1,5 +1,5 @@
 from app.models.jewel import JewelRequest, JewelAttribute
-
+from app.services.stat_mapper_service import stat_mapper_service
 
 class ItemParserService:
 
@@ -19,8 +19,12 @@ class ItemParserService:
                 item_level = int(line.replace("Item Level:", "").strip())
 
             elif "%" in line or "+" in line:
+                
+                mapped_stat = stat_mapper_service.map_stat(line)
+
                 attributes.append(
                     JewelAttribute(
+                        id=mapped_stat["trade_stat_id"] or "",
                         name=line,
                         value=self.extract_first_number(line),
                         type="explicit"

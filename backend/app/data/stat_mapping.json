@@ -1,0 +1,34 @@
+{
+  "maximum life": {
+    "id": "explicit.maximum_life",
+    "weight": 10
+  },
+  "fire damage": {
+    "id": "explicit.fire_damage",
+    "weight": 8
+  },
+  "cold damage": {
+    "id": "explicit.cold_damage",
+    "weight": 8
+  },
+  "lightning damage": {
+    "id": "explicit.lightning_damage",
+    "weight": 8
+  },
+  "critical": {
+    "id": "explicit.critical",
+    "weight": 9
+  },
+  "attack speed": {
+    "id": "explicit.attack_speed",
+    "weight": 9
+  },
+  "cast speed": {
+    "id": "explicit.cast_speed",
+    "weight": 9
+  },
+  "resistance": {
+    "id": "explicit.resistance",
+    "weight": 6
+  }
+}
