@@ -30,3 +30,11 @@ def parse_jewel(request: ItemTextRequest):
 def estimate_from_text(request: ItemTextRequest):
     jewel = item_parser_service.parse_jewel_text(request.item_text)
     return pricing_service.estimate_price(jewel)
+
+@router.post("/build-trade-query")
+def build_trade_query(jewel: JewelRequest):
+    search = pricing_service.estimate_price(jewel)
+
+    return {
+        "trade_query": search["debug"]["trade_query"]
+    }
