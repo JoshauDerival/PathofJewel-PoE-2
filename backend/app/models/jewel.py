@@ -3,8 +3,10 @@ from typing import List
 
 
 class JewelAttribute(BaseModel):
+    id: str = ""
     name: str
     value: float
+    type: str = "explicit"
 
 
 class JewelRequest(BaseModel):
