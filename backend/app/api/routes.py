@@ -6,7 +6,7 @@ from app.services.pricing_service import pricing_service
 from app.services.item_parser_service import item_parser_service
 from app.models.jewel import JewelRequest, EstimateResponse
 from app.services.trade_data_service import trade_data_service
-
+from app.providers.poe_trade_provider import poe_trade_provider
 
 router = APIRouter()
 
@@ -48,3 +48,14 @@ def trade_stats():
 @router.get("/trade-stats/search")
 def search_trade_stats(keyword: str):
     return trade_data_service.search_stats(keyword)
+
+@router.post("/poe-search-test")
+def poe_search_test(jewel: JewelRequest):
+    trade_query = pricing_service.estimate_price(jewel)["debug"]["trade_query"]
+    result = poe_trade_provider.search(trade_query)
+
+    return {
+        "search_id": result.get("id"),
+        "total_results": len(result.get("result", [])),
+        "first_10_result_ids": result.get("result", [])[:10]
+    }
