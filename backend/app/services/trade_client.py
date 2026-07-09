@@ -19,6 +19,9 @@ class TradeClient:
         joined_ids = ",".join(item_ids)
         endpoint = f"fetch/{joined_ids}?query={query_id}"
         return self._get(endpoint)
+    
+    def get(self, endpoint: str):
+        return self._get(endpoint)
 
     def _post(self, endpoint: str, payload: dict):
         url = f"{self.BASE_URL}/{endpoint}"
@@ -38,6 +41,7 @@ class TradeClient:
 
         response.raise_for_status()
         return response.json()
+    
 
 
 trade_client = TradeClient()

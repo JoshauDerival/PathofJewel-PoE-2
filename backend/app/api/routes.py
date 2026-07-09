@@ -5,6 +5,8 @@ from app.models.item_text import ItemTextRequest
 from app.services.pricing_service import pricing_service
 from app.services.item_parser_service import item_parser_service
 from app.models.jewel import JewelRequest, EstimateResponse
+from app.services.trade_data_service import trade_data_service
+
 
 router = APIRouter()
 
@@ -38,3 +40,11 @@ def build_trade_query(jewel: JewelRequest):
     return {
         "trade_query": search["debug"]["trade_query"]
     }
+
+@router.get("/trade-stats")
+def trade_stats():
+    return trade_data_service.get_stats()
+
+@router.get("/trade-stats/search")
+def search_trade_stats(keyword: str):
+    return trade_data_service.search_stats(keyword)
