@@ -59,3 +59,27 @@ def poe_search_test(jewel: JewelRequest):
         "total_results": len(result.get("result", [])),
         "first_10_result_ids": result.get("result", [])[:10]
     }
+
+@router.post("/poe-fetch-test")
+def poe_fetch_test(jewel: JewelRequest):
+    trade_query = pricing_service.estimate_price(jewel)["debug"]["trade_query"]
+
+    search_result = poe_trade_provider.search(trade_query)
+
+    search_id = search_result.get("id")
+    result_ids = search_result.get("result", [])[:10]
+
+    if not search_id or not result_ids:
+        return {
+            "message": "No trade results found.",
+            "search_id": search_id,
+            "result_ids": result_ids
+        }
+
+    fetch_result = poe_trade_provider.fetch(result_ids, search_id)
+
+    return {
+        "search_id": search_id,
+        "fetched_count": len(fetch_result.get("result", [])),
+        "results": fetch_result.get("result", [])
+    }
