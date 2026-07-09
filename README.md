@@ -1,252 +1,326 @@
-# PathofJewel-PoE-2
-
-A Python project for Path of Exile 2–related tooling and workflows.
-
-> This repository currently has a Python-only codebase. This documentation establishes a complete baseline and can be refined as features evolve.
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [Development](#development)
-- [Testing](#testing)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [Roadmap](#roadmap)
-- [License](#license)
+# Path of Jewel - PoE 2 Jewel Pricing Engine
 
 ## Overview
 
-**PathofJewel-PoE-2** is a Python repository intended to support Path of Exile 2 workflows, automation, or analysis use cases.
+**Path of Jewel** is an open-source pricing engine for **Path of Exile 2** jewels.
 
-Because the project is actively evolving, this README focuses on practical setup and contributor guidance so you can:
+The goal of this project is to estimate the value of a jewel by analyzing its modifiers, comparing it against similar items listed on the official PoE 2 Trade market, and providing an estimated market price with a confidence score.
 
-1. Clone and run the project quickly.
-2. Understand where code and assets belong.
-3. Contribute safely with consistent standards.
+Unlike a simple trade search tool, Path of Jewel is being designed as a **smart pricing assistant** capable of:
 
-## Features
+* Parsing copied item text directly from Path of Exile 2
+* Mapping modifiers to official trade stat IDs
+* Finding similar jewels listed on the trade market
+* Comparing modifier similarity
+* Filtering out unrealistic listings
+* Estimating a fair market price
+* Explaining why the estimate was chosen
 
-Current baseline capabilities:
+---
 
-- Python-based project foundation.
-- Clear local setup workflow.
-- Standardized development and contribution guidance.
-- Troubleshooting references for common environment issues.
+# Project Goals
 
-As implementation matures, replace this section with concrete feature bullets mapped to actual modules.
+* Build a clean, modular pricing engine.
+* Integrate with the official Path of Exile 2 Trade API.
+* Make the project easy to understand and contribute to.
+* Create a useful tool for the PoE community while serving as a professional portfolio project.
 
-## Project Structure
+---
 
-A typical structure for this repository should look like:
+# Current Features
 
-```text
-PathofJewel-PoE-2/
-├─ src/                  # Main application/package source code
-├─ tests/                # Test suite
-├─ docs/                 # Extended documentation
-├─ scripts/              # Helper scripts (build/dev/maintenance)
-├─ requirements.txt      # Runtime dependencies (optional)
-├─ requirements-dev.txt  # Development dependencies (optional)
-├─ pyproject.toml        # Preferred Python project metadata/config
-└─ README.md             # Project documentation
-```
+## Item Parsing
 
-If your current structure differs, keep this section aligned with the real tree over time.
+* Parse copied jewel text
+* Extract:
 
-## Requirements
+  * Base Type
+  * Item Level
+  * Explicit Modifiers
 
-- **Python**: 3.10+ recommended
-- **Git**: latest stable release
-- (Optional) **venv** or **conda** for environment isolation
+---
 
-## Installation
+## Stat Mapping
 
-### 1) Clone the repository
-
-```bash
-git clone https://github.com/JoshauDerival/PathofJewel-PoE-2.git
-cd PathofJewel-PoE-2
-```
-
-### 2) Create and activate a virtual environment
-
-#### macOS/Linux
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-#### Windows (PowerShell)
-
-```powershell
-py -m venv .venv
-.venv\Scripts\Activate.ps1
-```
-
-### 3) Install dependencies
-
-If a `requirements.txt` exists:
-
-```bash
-pip install -r requirements.txt
-```
-
-If using `pyproject.toml` (setuptools/poetry/hatch/pdm), use the tool configured by the repo.
-
-## Configuration
-
-Create a local environment file if needed:
-
-```bash
-cp .env.example .env
-```
-
-Typical values:
-
-- API keys/tokens
-- Logging level
-- Local paths
-- Feature flags
-
-Never commit secrets. Ensure `.env` is listed in `.gitignore`.
-
-## Usage
-
-Run the project using one of the following common patterns (depending on repository setup):
-
-```bash
-python -m src
-```
-
-or
-
-```bash
-python main.py
-```
-
-or
-
-```bash
-python scripts/run.py
-```
-
-If your repo exposes a CLI entrypoint, document it here with real commands and examples.
-
-## Development
-
-### Code style
-
-Recommended tooling:
-
-- **Black** for formatting
-- **Ruff** for linting
-- **isort** for import ordering
+Maps parsed modifiers to internal trade identifiers.
 
 Example:
 
-```bash
-ruff check .
-black .
+```
++7% increased Maximum Life
+        ↓
+maximum life
+        ↓
+Trade Stat ID
 ```
 
-### Type checking (optional but recommended)
+---
 
-```bash
-mypy src
+## Trade Query Builder
+
+Generates trade search queries from parsed jewels.
+
+---
+
+## Similarity Engine
+
+Compares jewels based on shared modifiers.
+
+Current implementation:
+
+* Modifier matching
+* Similarity scoring
+
+Future improvements:
+
+* Weighted similarity
+* Value scaling
+* Modifier importance
+* Machine learning ranking
+
+---
+
+## Mock Trade Provider
+
+A development provider that returns mock trade listings.
+
+Used for:
+
+* Testing
+* Development
+* Pricing algorithm validation
+
+---
+
+## Pricing Engine
+
+Current features:
+
+* Weighted modifier scoring
+* Similarity comparison
+* Median price calculation
+* Average price calculation
+* Listing statistics
+
+Future versions will use live trade listings.
+
+---
+
+## FastAPI Backend
+
+Built using FastAPI.
+
+Interactive documentation:
+
+```
+http://127.0.0.1:8000/docs
 ```
 
-### Pre-commit hooks (recommended)
+---
 
-```bash
-pip install pre-commit
-pre-commit install
-pre-commit run --all-files
+# Project Structure
+
+```
+PathofJewel-PoE-2
+│
+├── backend
+│   ├── app
+│   │   ├── api
+│   │   ├── core
+│   │   ├── data
+│   │   ├── models
+│   │   ├── providers
+│   │   ├── services
+│   │   └── main.py
+│   │
+│   └── requirements.txt
+│
+├── docs
+│
+├── tests
+│
+└── README.md
 ```
 
-## Testing
+---
 
-Use `pytest` as the default test runner:
+# Technology Stack
 
-```bash
-pytest -q
+Backend
+
+* Python
+* FastAPI
+* Pydantic
+* Requests
+
+Architecture
+
+* Provider Pattern
+* Service Layer
+* Dependency Separation
+
+Future
+
+* SQLite/PostgreSQL
+* Docker
+* GitHub Actions
+* React Frontend
+
+---
+
+# Current Architecture
+
+```
+                FastAPI
+                   │
+         ┌─────────┴─────────┐
+         │                   │
+    Parse Routes      Estimate Routes
+         │                   │
+         ▼                   ▼
+ Item Parser Service   Pricing Service
+         │                   │
+         ├───────────┬────────┘
+         ▼           ▼
+   Stat Mapper   Similarity Service
+                       │
+                       ▼
+             Trade Provider Service
+                │              │
+        Mock Provider   PoE Provider
+                │
+                ▼
+         Price Estimator
 ```
 
-With coverage:
+---
+
+# Development Roadmap
+
+## Phase 1 – Foundation ✅
+
+* FastAPI backend
+* Item parser
+* Pricing service
+* Similarity engine
+* Mock trade provider
+* Response models
+
+---
+
+## Phase 2 – Trade Integration 🚧
+
+* Trade client
+* Official stat IDs
+* Trade query builder
+* Live search
+* Live fetch
+
+---
+
+## Phase 3 – Smart Pricing
+
+* Similarity ranking
+* Outlier removal
+* Median pricing
+* Confidence score
+* Recommended listing price
+
+---
+
+## Phase 4 – User Interface
+
+* Web interface
+* Paste item text
+* Display comparable listings
+* Price history
+* Saved searches
+
+---
+
+## Phase 5 – Production
+
+* Docker support
+* Automated testing
+* GitHub Actions CI/CD
+* Performance optimization
+* Full documentation
+
+---
+
+# Planned Features
+
+* Clipboard import from Path of Exile 2
+* Real-time trade price estimation
+* Similar jewel recommendations
+* Confidence scoring
+* Outlier detection
+* Price history
+* Listing recommendations
+* Modifier quality analysis
+* Market trend analysis
+* Cache for trade searches
+
+---
+
+# Running the Project
+
+Clone the repository:
 
 ```bash
-pytest --cov=src --cov-report=term-missing
+git clone https://github.com/YOUR_USERNAME/PathofJewel-PoE-2.git
 ```
 
-Add at least one test for every bug fix and meaningful feature change.
-
-## Troubleshooting
-
-### Virtual environment activation fails
-
-- Recreate the environment:
-  - `rm -rf .venv` (macOS/Linux)
-  - Remove `.venv` folder manually (Windows)
-- Re-run setup commands.
-
-### Dependency installation errors
-
-- Upgrade build tools:
+Navigate to the project:
 
 ```bash
-python -m pip install --upgrade pip setuptools wheel
+cd PathofJewel-PoE-2
 ```
 
-- Reinstall dependencies afterward.
+Install dependencies:
 
-### Import errors when running scripts
+```bash
+pip install -r backend/requirements.txt
+```
 
-- Confirm you are in repository root.
-- Confirm virtual environment is active.
-- Prefer module execution (`python -m ...`) over direct file execution where appropriate.
+Start the server:
 
-## Contributing
+```bash
+python -m uvicorn app.main:app --reload
+```
+
+Open the API documentation:
+
+```
+http://127.0.0.1:8000/docs
+```
+
+---
+
+# Contributing
+
+Contributions are welcome.
+
+If you would like to contribute:
 
 1. Fork the repository.
-2. Create a feature branch:
+2. Create a feature branch.
+3. Make your changes.
+4. Add tests if applicable.
+5. Submit a pull request.
 
-```bash
-git checkout -b feat/short-description
-```
+---
 
-3. Make focused, well-scoped commits.
-4. Run linting and tests locally.
-5. Open a pull request with:
-   - clear summary
-   - test evidence
-   - screenshots/logs when relevant
+# License
 
-### Commit message style
+This project is open source. A license will be added before the first public release.
 
-Suggested conventional prefixes:
+---
 
-- `feat:` new functionality
-- `fix:` bug fix
-- `docs:` documentation updates
-- `refactor:` code changes without behavior change
-- `test:` test-related changes
-- `chore:` maintenance
+# Current Status
 
-## Roadmap
+**Version:** 0.1 (Development)
 
-Suggested near-term roadmap:
+This project is actively under development.
 
-- Document concrete application architecture.
-- Add reproducible local dev bootstrap (`Makefile`/task runner).
-- Add CI pipeline for lint + tests.
-- Expand usage examples with real PoE2 workflows.
-
-## License
-
-If not already present, add a `LICENSE` file and reference it here (e.g., MIT, Apache-2.0, GPL-3.0).
+The current implementation focuses on building a robust architecture before connecting to the live Path of Exile 2 Trade market. Future updates will replace mock data with real trade listings and expand the pricing engine with advanced similarity scoring and market analysis.
