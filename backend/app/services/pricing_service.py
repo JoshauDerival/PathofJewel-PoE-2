@@ -1,7 +1,7 @@
 from app.models.jewel import JewelRequest
 from app.services.trade_service import trade_service
 from app.services.stat_mapper_service import stat_mapper_service
-
+from app.services.similarity_service import similarity_service
 
 class PricingService:
 
@@ -42,6 +42,7 @@ class PricingService:
             "matched_stats": matched_stats,
             "unmatched_stats": unmatched_stats,
             "trade_query": search,
+            "similarity_ready": True,
             "note": "Weighted mock estimate. Real trade listings will be added later."
         }
 
