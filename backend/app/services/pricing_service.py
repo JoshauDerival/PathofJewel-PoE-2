@@ -51,8 +51,8 @@ class PricingService:
 
             results.append(
                 {
-                "price": listing["price"],
-                "currency": listing["currency"],
+                "price": listing["price"]["amount"],
+                "currency": listing["price"]["currency"],
                 "similarity": round(similarity, 2)
                 }
             )

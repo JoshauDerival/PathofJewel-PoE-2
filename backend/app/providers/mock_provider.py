@@ -10,7 +10,27 @@ class MockTradeProvider:
             self.listings = json.load(file)
 
     def search(self, query: dict):
-        return self.listings
+        results = []
+
+        for index, listing in enumerate(self.listings):
+            results.append(
+                {
+                    "id": f"mock-{index + 1}",
+                    "price": {
+                        "amount": listing["price"],
+                        "currency": listing["currency"]
+                    },
+                    "seller": {
+                        "name": "Mock Seller",
+                        "online": True
+                    },
+                    "item_level": 82,
+                    "attributes": listing["attributes"],
+                    "similarity": 0.0
+                }
+            )
+
+        return results
 
 
 mock_trade_provider = MockTradeProvider()
